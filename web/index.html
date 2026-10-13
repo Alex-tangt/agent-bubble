@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Agent Bubble · 阅读助手</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<main class="shell">
+  <aside class="sidebar"><div class="brand"><span class="logo">a</span><div>Agent Bubble<small>把内容交出去，继续你的事</small></div></div>
+  <button id="new-task" class="primary">＋ 新的总结</button><div class="section-label">最近会话</div><div id="conversations" class="conversations"></div>
+  <button id="settings-button" class="quiet">连接设置</button><p class="aside-note">这里和安卓悬浮窗连接同一个 Agent。</p></aside>
+  <section class="workspace"><header><div><span class="eyebrow">PERSONAL READING AGENT</span><h1 id="title">读懂眼前的内容</h1></div><span id="connection" class="badge">未连接</span></header>
+    <div id="error" class="error" role="alert" hidden></div>
+    <section id="composer" class="composer"><h2>今天想了解什么？</h2><p class="muted">放入文章、B 站链接，或直接提供正文与字幕。</p>
+      <div class="tabs" role="tablist"><button data-kind="url" class="selected">链接</button><button data-kind="text">正文</button><button data-kind="transcript">字幕</button></div>
+      <label for="source">内容来源</label><textarea id="source" placeholder="粘贴分享链接，也可以包含分享文案" rows="5"></textarea>
+      <label for="instruction">交给 Agent 的任务</label><textarea id="instruction" rows="2">请总结这份内容，列出关键观点和需要注意的地方。</textarea>
+      <button id="submit" class="primary">交给 Agent <span>↗</span></button><small class="muted">收到任务回执后，关闭页面也会继续执行。</small>
+    </section>
+    <section id="thread" class="thread" hidden><div id="source-card" class="source-card"></div><div id="messages" class="messages"></div>
+      <div class="follow"><textarea id="follow-up" placeholder="继续追问这份内容…" rows="2"></textarea><button id="follow-submit" class="primary">发送</button></div>
+      <div class="actions"><button id="cancel" class="quiet" hidden>停止本次处理</button><button id="website-login" class="quiet" hidden>登录或验证后重试</button><button id="retry" class="quiet" hidden>在原会话重试</button><button id="supplement" class="quiet" hidden>补充正文或字幕</button></div>
+    </section>
+  </section>
+</main>
+<dialog id="settings"><form method="dialog"><h2>连接你的 Agent</h2><p class="muted">使用本地服务的连接凭据。模型 API key 保存在服务器。</p><label for="token">连接凭据</label><input id="token" type="password" autocomplete="off" placeholder="AGENT_BUBBLE_TOKEN"><p id="settings-error" class="error" hidden></p><div class="dialog-actions"><button value="cancel" class="quiet">关闭</button><button id="save-settings" type="button" class="primary">连接</button></div></form><section id="website-login-panel" class="login-panel" hidden><h2>网站登录</h2><p class="muted">登录窗口会在运行后台的电脑上打开。你可以随时关闭窗口；关闭后继续执行已接收的任务。</p><p id="website-login-status" class="muted" role="status"></p><div class="actions"><button id="zhihu-login" class="quiet">知乎登录 / 重新登录</button><button id="wechat-login" class="quiet">公众号访问验证</button><button id="finish-website-login" class="quiet" hidden>关闭登录窗口并继续</button></div></section></dialog>
+<script type="module" src="/app.js"></script></body></html>

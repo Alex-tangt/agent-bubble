@@ -1,0 +1,29 @@
+[
+  {
+    "id": "zhihu-1",
+    "url": "https://zhuanlan.zhihu.com/p/2071183687383771052",
+    "expectedTitle": "得物知识问答：复合检索 Agent 的系统设计实践",
+    "expectedTail": "未经得物技术许可严禁转载，否则依法追究法律责任。"
+  },
+  {
+    "id": "zhihu-2",
+    "url": "https://zhuanlan.zhihu.com/p/2091499653074371284",
+    "expectedTitle": "给 Agent 加了记忆、反思、Skill，真的会变强吗？",
+    "expectedTail": "更适合作为工程决策的起点。"
+  },
+  {
+    "id": "36kr-1",
+    "url": "https://36kr.com/p/4016577580208006",
+    "expectedTail": "但这不是 Eazo 的终点"
+  },
+  {
+    "id": "36kr-2",
+    "url": "https://36kr.com/p/4013875644682372",
+    "expectedTail": "36氪平台仅提供信息存储空间服务"
+  },
+  {
+    "id": "wechat-1",
+    "url": "https://mp.weixin.qq.com/s/bb5MPl205ZMWu41v0nc63Q",
+    "expectedTail": "我们下篇见"
+  }
+]
