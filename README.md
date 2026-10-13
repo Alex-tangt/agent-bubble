@@ -48,7 +48,7 @@ cd agent-bubble
 npm ci
 ```
 
-复制 `.env.example` 为 `.env`（Windows：`Copy-Item .env.example .env`；Linux/macOS：`cp .env.example .env`），填写：
+首次复制 `.env.example` 为 `.env`（Windows：`Copy-Item .env.example .env`；Linux/macOS：`cp .env.example .env`），已有配置时不要覆盖。填写自己的凭据，不能照抄下面的占位文字：
 
 ```dotenv
 DEEPSEEK_API_KEY=your-deepseek-key
