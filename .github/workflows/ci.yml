@@ -11,6 +11,7 @@ concurrency:
 jobs:
   backend:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
@@ -37,10 +38,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Prepare Android SDK
-        run: |
-          sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
-          printf 'sdk.dir=%s\n' "$ANDROID_HOME" > android/local.properties
+      - name: Install Android SDK
+        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+          log-accepted-android-sdk-licenses: false
+      - name: Configure Android SDK
+        run: printf 'sdk.dir=%s\n' "$ANDROID_HOME" > android/local.properties
       - name: Build and check Android
         run: bash android/gradlew -p android assembleDebug testDebugUnitTest lintDebug --no-daemon
       - name: Audit APK

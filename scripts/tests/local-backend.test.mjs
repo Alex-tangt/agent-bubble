@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { execFile, execFileSync, spawn } from 'node:child_process';
 import fs from 'node:fs';
-import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -12,6 +12,8 @@ import { clearInstanceState, publishHostState } from '../host-state.mjs';
 
 const exec = promisify(execFile);
 const root = resolve(import.meta.dirname, '../..');
+// A fresh clone has no ignored tool directory; tests prepare their own workspace.
+await mkdir(join(root,'.tools'),{recursive:true});
 const pause = ms => new Promise(resolve=>setTimeout(resolve,ms));
 function processIdentity(pid) {
   if(!Number.isInteger(pid)||pid<1)return null;
