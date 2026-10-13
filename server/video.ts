@@ -134,7 +134,10 @@ export class VideoReader {
     if(provider==='local'&&!existsSync(join(settings.modelDir,'model.bin')))throw new SourceUnavailable('本地转写模型尚未准备好，请在电脑运行 setup-asr.ps1 后在原会话重试','ASR_UNAVAILABLE');
     if(provider==='qwen'&&!this.config.qwenAsr?.apiKey)throw new SourceUnavailable('后端未配置 Qwen 转写凭据','ASR_UNAVAILABLE');
     onProgress?.(`${fallback}，改用公开音轨${provider==='qwen'?'交给 Qwen 云端转写':'在电脑本地转写'}`);
-    const root=resolve(this.config.dataDir,'video-work');await mkdir(root,{recursive:true});
+    const requestedRoot=resolve(this.config.dataDir,'video-work');await mkdir(requestedRoot,{recursive:true});
+    // Normalize both sides before containment checks. Windows short TEMP paths
+    // and junction-backed data directories otherwise disagree with realpath(audio).
+    const root=await realpath(requestedRoot);
     const work=await mkdtemp(join(root,'job-'));
     if(!work.startsWith(root+sep))throw new Error('Invalid media workspace');
     try{

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,rm,mkdir,writeFile,readFile,readdir} from 'node:fs/promises';
+import {mkdtemp,rm,mkdir,writeFile,readFile,readdir,symlink} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join,resolve,sep} from 'node:path';
 import {VideoReader,videoUrl} from '../video.js';
@@ -127,6 +127,28 @@ test('configured Qwen fallback downloads audio and preserves cloud basis without
     const source=await reader.read('https://www.bilibili.com/video/BV1t2HQ6EEaD');
     assert.equal(source.transcriptionProvider,'qwen');assert.match(source.transcriptBasis!,/Qwen 云端/);assert.equal(source.processingMs?.upload,50);
     assert.equal(cloudCalls,1);assert.equal(localCalls,0);assert.deepEqual(await readdir(join(f.root,'video-work')),[]);
+  }finally{await f.cleanup();}
+});
+
+test('canonical audio paths accept a junction-backed workspace but reject files outside its job',async()=>{
+  const f=await fixture();let outside=false;
+  try{
+    const target=join(f.root,'real-data'),alias=join(f.root,'data-alias');
+    await mkdir(target);await symlink(target,alias,process.platform==='win32'?'junction':'dir');
+    f.cfg.dataDir=alias;
+    const reader=new VideoReader(f.cfg,{checkPublicDestination:async()=>{},process:async(_command,args)=>{
+      if(args.includes('--dump-single-json'))return {stdout:JSON.stringify(metadata()),stderr:''};
+      if(args.includes('--load-info-json')){
+        const audio=outside?join(f.root,'outside.m4a'):args[args.indexOf('-o')+1]!.replace('%(ext)s','m4a');
+        await writeFile(audio,Buffer.alloc(500));return {stdout:audio,stderr:''};
+      }
+      return {stdout:JSON.stringify({segments:[{start:0,end:30,text:'完整转写'}],duration:30,model:'fixture'}),stderr:''};
+    }});
+    assert.equal((await reader.read('https://www.bilibili.com/video/BV1t2HQ6EEaD')).method,'audio_transcription');
+    outside=true;
+    await assert.rejects(reader.read('https://www.bilibili.com/video/BV1t2HQ6EEaD'),
+      (error:unknown)=>error instanceof SourceUnavailable&&error.reason==='CONTENT_INCOMPLETE');
+    assert.deepEqual(await readdir(join(target,'video-work')),[]);
   }finally{await f.cleanup();}
 });
 test('subtitle network failure can use audio, but missing audio and excessive duration stop before ASR',async()=>{
